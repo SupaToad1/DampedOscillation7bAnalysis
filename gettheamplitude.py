@@ -4,6 +4,10 @@ import time as t
 import numpy as np
 
 
+fout = open('outputdata.csv','w+')
+fout.write('oscillation No,time,amplitude\n')
+oscillation=0
+
 naturallogampvalues=[] # 2d array containing the time at which a cycle started and the ln value of the amplitude
 
 with open(sys.argv[1], 'r') as f:
@@ -21,10 +25,13 @@ with open(sys.argv[1], 'r') as f:
         amplitude=Decimal(line.split(",")[1])
         if amplitude<maxamp:
             print(f'\n{time}  {maxamp}\n')
+            oscillation+=1
             if maxamp<0:
                 print('error')
             else:
                 naturallogampvalues.append((time,maxamp.ln()))
+                fout.write(f'{oscillation},{time},{maxamp}\n')
+
             minamp = amplitude
             while True:
                 newamp = Decimal(f.readline().split(",")[1])
@@ -38,7 +45,5 @@ with open(sys.argv[1], 'r') as f:
                 print(".",end='',flush=True)
                 t.sleep(0.005)
     print(naturallogampvalues)    
-'''
-            print(f'{time} {maxamp}')
-            t.sleep(0.5)
-            f.readline()'''
+
+fout.close()
